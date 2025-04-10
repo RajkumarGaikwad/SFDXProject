@@ -32,7 +32,7 @@ pipeline {
                 // Run the Salesforce CLI code analyzer
                 sh 'sf project deploy validate'
                 sh 'cd SFDXProject'
-                sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --target-org my-hub-org --csv > analysis-results.csv'
+                sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --csv > analysis-results.csv'
             }
         }
 
