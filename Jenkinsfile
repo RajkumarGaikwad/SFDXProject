@@ -30,7 +30,6 @@ pipeline {
          stage('Run Salesforce Code Analyzer') {
             steps {
                 // Run the Salesforce CLI code analyzer
-                sh 'cd SFDXProject'
                 sh 'sf code-analyzer run --workspace ./force-app/**/*.cls --rule-selector all > analysis-results.csv'
             }
         }
