@@ -13,5 +13,12 @@ pipeline {
                 sh 'sfdx --version'
             }
         }
+
+        stage('Check SF') {
+            steps {
+                sh 'which sf'
+                sh 'sf --version'
+            }
+        }
     }
 }
