@@ -12,13 +12,6 @@ pipeline {
             }
         }
 
-        stage('Check SF') {
-            steps {
-                sh 'which sf'
-                sh 'sf --version'
-            }
-        }
-
         stage('Authenticate Salesforce Org') {
             steps {
                  withCredentials([file(credentialsId:'2579a42d-3efe-45a9-aeb2-7e07583c28ce', variable: 'jwt_key_file')]) {
@@ -30,7 +23,7 @@ pipeline {
          stage('Run Salesforce Code Scanner') {
             steps {
                 // Run the Salesforce CLI Code Scanner
-                 sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --csv > scanner-results.csv'
+                 sh 'sf scanner run --target "**/default/**" --category Design,Best Practices > scanner-results.csv'
             }
         }
 
