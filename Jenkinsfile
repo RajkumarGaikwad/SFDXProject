@@ -27,17 +27,25 @@ pipeline {
             }
         }
 
+         stage('Run Salesforce Code Scanner') {
+            steps {
+                // Run the Salesforce CLI Code Scanner
+                 sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --csv > scanner-results.csv'
+            }
+        }
+
+
          stage('Run Salesforce Code Analyzer') {
             steps {
                 // Run the Salesforce CLI code analyzer
-                sh 'sf code-analyzer run --workspace ./force-app/**/*.cls --rule-selector all > analysis-results.csv'
+                sh 'sf code-analyzer run --workspace ./force-app/**/*.cls --rule-selector all > analyzer-results.csv'
             }
         }
 
         stage('Archive Results') {
             steps {
                 // Archive the analysis results
-                archiveArtifacts artifacts: 'analysis-results.csv', fingerprint: true
+                archiveArtifacts artifacts: '*.csv', fingerprint: true
             }
         }
 
