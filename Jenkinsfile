@@ -23,7 +23,7 @@ pipeline {
          stage('Run Salesforce Code Scanner') {
             steps {
                 // Run the Salesforce CLI Code Scanner
-                 sh 'sf scanner run --target "**/default/**" --category Design,Best Practices > scanner-results.csv'
+                 sh 'sf scanner run --target "**/default/**" > scanner-results.csv'
             }
         }
 
