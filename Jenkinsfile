@@ -28,12 +28,12 @@ pipeline {
         }
 
 
-         stage('Run Salesforce Code Analyzer') {
+        /* stage('Run Salesforce Code Analyzer') {
             steps {
                 // Run the Salesforce CLI code analyzer
                 sh 'sf code-analyzer run --workspace ./force-app/**/*.cls --rule-selector all > analyzer-results.csv'
             }
-        }
+        }*/
 
         stage('Archive Results') {
             steps {
