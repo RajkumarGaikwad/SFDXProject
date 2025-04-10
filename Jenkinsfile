@@ -23,14 +23,6 @@ pipeline {
                 }
             }
     
-            /*  stage('Run Salesforce Code Scanner') {
-                steps {
-                    // Run the Salesforce CLI Code Scanner
-                     sh 'sf scanner run --target "**/default/**" > scanner-results.csv'
-                }
-            }*/
-    
-    
             stage('Run Salesforce Code Analyzer') {
                 steps {
                     // Run the Salesforce CLI code analyzer
