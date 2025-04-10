@@ -5,12 +5,7 @@ pipeline {
     }
     stages {
         
-         stage('Setup Salesforce CLI') {
-            steps {
-                // Install Salesforce CLI (if not already installed)
-                sh 'curl -sL https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz | tar -xJ && ./sfdx/install'
-            }
-        }
+         
         
         stage('Check SFDX') {
             steps {
