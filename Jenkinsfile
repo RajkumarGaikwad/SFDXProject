@@ -31,7 +31,6 @@ pipeline {
             steps {
                 // Run the Salesforce CLI code analyzer
                 sh 'sf project deploy validate'
-                sh 'sf env list --sort "-Aliases" --columns "Aliases"'
                 sh 'cd SFDXProject'
                 sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --csv > analysis-results.csv'
             }
