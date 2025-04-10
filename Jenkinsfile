@@ -5,6 +5,13 @@ pipeline {
     }
     stages {
 
+        stage('Checkout Code') {
+            steps {
+                // Checkout the code from the repository
+                checkout scm
+            }
+        }
+
         stage('Check SF') {
             steps {
                 sh 'which sf'
@@ -20,5 +27,22 @@ pipeline {
             }
         }
 
-    }
+         stage('Run Salesforce Code Analyzer') {
+            steps {
+                // Run the Salesforce CLI code analyzer
+                sh 'sf project deploy validate'
+                sh 'cd SFDXProject'
+                sh 'sf scanner run --target "**/default/**" --category Design,Best Practices --target-org my-hub-org --csv > analysis-results.csv'
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                // Archive the analysis results
+                archiveArtifacts artifacts: 'analysis-results.csv', fingerprint: true
+            }
+        }
+
+    
+}
 }
