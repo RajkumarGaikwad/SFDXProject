@@ -33,6 +33,9 @@ pipeline {
                     sh '''
                         echo "Generating delta between commits..."
                         git fetch origin master
+                        git fetch origin RajkumarGaikwad-patch-2:RajkumarGaikwad-patch-2
+
+                        git checkout RajkumarGaikwad-patch-2
                         
                         git diff --name-only origin/master RajkumarGaikwad-patch-2 | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
