@@ -45,9 +45,8 @@ pipeline {
                 script {
                     sh '''
                         if [ -s delta-files.txt ]; then
-                            echo "Running SFDX Scanner on delta files..."
-                            sfdx scanner:run --target $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --format table
-                            sf code --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all > analyzer-results.csv
+                            echo "Running SF Code Analyzer  on delta files..."
+                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all > analyzer-results.csv
                         else
                             echo "No delta files to scan."
                         fi
