@@ -64,8 +64,13 @@ pipeline {
 
             stage('Archive Results') {
                 steps {
-                    // Archive the analysis results
-                    archiveArtifacts artifacts: 'analyzer-results.csv', fingerprint: true
+                    if (fileExists('analyzer-results.csv')) {
+                         // Archive the analysis results
+                        archiveArtifacts artifacts: 'analyzer-results.csv', fingerprint: true
+                        } else {
+                            echo "No analyzer-results.csv file found, skipping archive."
+                        }
+
                 }
             }
     }
