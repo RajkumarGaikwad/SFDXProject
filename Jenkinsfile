@@ -32,9 +32,9 @@ pipeline {
                     
                     sh '''
                         echo "Generating delta between commits..."
-                        git fetch origin ${targetBranch}
+                        git fetch origin master
                         
-                        git diff --name-only origin/${targetBranch} ${sourceBranch} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git diff --name-only origin/master RajkumarGaikwad-patch-2 | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
                         echo "Changed Files:"
                         cat delta-files.txt || echo "No files found."
