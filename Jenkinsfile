@@ -27,8 +27,8 @@ pipeline {
             steps {
                 script {
                     
-                    def targetBranch = master
-                    def sourceBranch = RajkumarGaikwad-patch-2
+                    def targetBranch = 'master'
+                    def sourceBranch = 'RajkumarGaikwad-patch-2'
                     
                     sh '''
                         echo "Generating delta between commits..."
