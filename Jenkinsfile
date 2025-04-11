@@ -22,13 +22,40 @@ pipeline {
                     }
                 }
             }
-    
-            stage('Run Salesforce Code Analyzer') {
-                steps {
-                    // Run the Salesforce CLI code analyzer
-                    sh 'sf code-analyzer run --workspace ./force-app/**/*.cls --rule-selector all > analyzer-results.csv'
+
+        stage('Generate Delta') {
+            steps {
+                script {
+                    sh '''
+                        echo "Generating delta between commits..."
+                        GIT_PREVIOUS_COMMIT=$(git rev-parse HEAD~1)
+                        GIT_CURRENT_COMMIT=$(git rev-parse HEAD)
+
+                        git diff --name-only $GIT_PREVIOUS_COMMIT $GIT_CURRENT_COMMIT | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+
+                        echo "Delta Files:"
+                        cat delta-files.txt || echo "No files found."
+                    '''
                 }
             }
+        }
+
+        stage('Run Salesforce Code Analyzer - Delta Files Only') {
+            steps {
+                script {
+                    sh '''
+                        if [ -s delta-files.txt ]; then
+                            echo "Running SFDX Scanner on delta files..."
+                            sfdx scanner:run --target $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --format table
+                            sf code --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all > analyzer-results.csv
+                        else
+                            echo "No delta files to scan."
+                        fi
+                    '''
+                }
+            }
+        }
+    
 
             stage('Archive Results') {
                 steps {
