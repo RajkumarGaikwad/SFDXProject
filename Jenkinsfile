@@ -28,12 +28,11 @@ pipeline {
                 script {
                     sh '''
                         echo "Generating delta between commits..."
-                        GIT_PREVIOUS_COMMIT=$(git rev-parse HEAD~1)
-                        GIT_CURRENT_COMMIT=$(git rev-parse HEAD)
+                        git fetch origin ${env.CHANGE_TARGET}
+                        
+                        git diff --name-only origin/${env.CHANGE_TARGET} ${env.CHANGE_BRANCH} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
-                        git diff --name-only $GIT_PREVIOUS_COMMIT $GIT_CURRENT_COMMIT | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
-
-                        echo "Delta Files:"
+                        echo "Changed Files:"
                         cat delta-files.txt || echo "No files found."
                     '''
                 }
