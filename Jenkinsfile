@@ -32,7 +32,7 @@ pipeline {
                     
                     sh '''
                         echo "Generating delta between commits..."
-                        git fetch origin ${env.CHANGE_TARGET}
+                        git fetch origin ${targetBranch}
                         
                         git diff --name-only origin/${targetBranch} ${sourceBranch} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
