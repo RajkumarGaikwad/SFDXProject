@@ -26,11 +26,15 @@ pipeline {
         stage('Generate Delta') {
             steps {
                 script {
+                    
+                    def targetBranch = env.CHANGE_TARGET
+                    def sourceBranch = env.CHANGE_BRANCH
+                    
                     sh '''
                         echo "Generating delta between commits..."
                         git fetch origin ${env.CHANGE_TARGET}
                         
-                        git diff --name-only origin/${env.CHANGE_TARGET} ${env.CHANGE_BRANCH} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git diff --name-only origin/${targetBranch} ${sourceBranch} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
                         echo "Changed Files:"
                         cat delta-files.txt || echo "No files found."
