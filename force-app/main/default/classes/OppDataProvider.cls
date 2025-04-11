@@ -1,4 +1,4 @@
-public with sharing class OpportunityDataProvider {
+public with sharing class OppDataProvider {
 
     // PMD Issue: Avoid hardcoding values
     public static String CLOSED_STAGE = 'Closed Won'; 
