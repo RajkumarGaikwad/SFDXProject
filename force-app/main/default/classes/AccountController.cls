@@ -5,4 +5,7 @@ public with sharing class AccountController {
         return [SELECT Id, Name, AccountNumber FROM Account WHERE Name LIKE :key  LIMIT 10];
     }
 
+ public void  getAcc(String searchKey) {
+}
+
 }
