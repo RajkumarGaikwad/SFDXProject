@@ -37,7 +37,7 @@ pipeline {
                     sh '''
                         echo "Generating delta between commits..."
                         
-                        git fetch origin $TARGET_BRANCH
+                        git fetch origin $TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH 
 
                         git checkout $TARGET_BRANCH
                         
