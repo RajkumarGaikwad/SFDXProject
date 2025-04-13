@@ -52,7 +52,7 @@ pipeline {
                     sh '''
                         if [ -s delta-files.txt ]; then
                             echo "Running SF Code Analyzer  on delta files..."
-                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all > analyzer-results.csv
+                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all > code-analyzer-results.csv
                         else
                             echo "No delta files to scan."
                         fi
@@ -65,9 +65,9 @@ pipeline {
             stage('Archive Results') {
                 steps {
                      script {
-                        if (fileExists('analyzer-results.csv')) {
+                        if (fileExists('code-analyzer-results.csv')) {
                              // Archive the analysis results
-                            archiveArtifacts artifacts: 'analyzer-results.csv', fingerprint: true
+                            archiveArtifacts artifacts: 'code-analyzer-results.csv', fingerprint: true
                             } else {
                                 echo "No analyzer-results.csv file found, skipping archive."
                             }
