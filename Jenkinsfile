@@ -2,11 +2,6 @@ pipeline {
     
     agent any
 
-    triggers {
-        // Optional: Trigger on PRs automatically
-        githubPullRequest() // or bitbucketPullRequest()
-    }
-
     
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
