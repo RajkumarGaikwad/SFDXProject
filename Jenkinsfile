@@ -1,12 +1,34 @@
 pipeline {
     
     agent any
+
+    triggers {
+        // Optional: Trigger on PRs automatically
+        githubPullRequest() // or bitbucketPullRequest()
+    }
+
     
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
     }
     
     stages {
+
+        stage('Check PR Target') {
+            when {
+                expression {
+                    return !(env.CHANGE_ID && env.CHANGE_TARGET == 'master')
+                }
+            }
+            steps {
+                echo "Skipping build: Not a PR to master branch"
+                script {
+                    currentBuild.result = 'NOT_BUILT'
+                    // Exit early
+                    return
+                }
+            }
+        }
     
             stage('Authenticate Salesforce Org') {
                 steps {
