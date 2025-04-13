@@ -45,7 +45,7 @@ pipeline {
                     sh '''
                         if [ -s delta-files.txt ]; then
                             echo "Running SF Code Analyzer  on delta files..."
-                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "ode-analyzer-results.csv" --config-file "code-analyzer.yml"
+                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "code-analyzer-results.csv" --config-file "code-analyzer.yml"
                         else
                             echo "No delta files to scan."
                         fi
