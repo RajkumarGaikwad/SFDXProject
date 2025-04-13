@@ -8,24 +8,14 @@ pipeline {
     }
     
     stages {
-
-        stage('Check PR Target') {
-            when {
-                expression {
-                    return !(env.CHANGE_ID && env.CHANGE_TARGET == 'master')
-                }
-            }
-            steps {
-                echo "Skipping build: Not a PR to master branch"
-                script {
-                    currentBuild.result = 'NOT_BUILT'
-                    // Exit early
-                    return
-                }
-            }
-        }
     
             stage('Authenticate Salesforce Org') {
+                when {
+                    allOf {
+                        expression { return env.CHANGE_ID != null } // Confirms it's a PR
+                        expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                    }
+                }
                 steps {
                      withCredentials([file(credentialsId:'2579a42d-3efe-45a9-aeb2-7e07583c28ce', variable: 'jwt_key_file')]) {
                      sh 'sf org login jwt --client-id 3MVG9rZjd7MXFdLgA4ym8bhSwiFNIHiSqo_uLz66HyBrAfHWef6G4fDcd9RPeanyEsRxsKDwtvObwzNMloBA1 --username rajkumar.gaikwad3@gmail.com --jwt-key-file ${jwt_key_file} --alias my-hub-org --set-default --set-default-dev-hub'
@@ -34,6 +24,12 @@ pipeline {
             }
 
         stage('Generate Delta') {
+         when {
+                allOf {
+                    expression { return env.CHANGE_ID != null } // Confirms it's a PR
+                    expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                }
+            }
             steps {
                 script {
                     
@@ -57,6 +53,12 @@ pipeline {
         }
 
         stage('Run Salesforce Code Analyzer - Delta Files Only') {
+            when {
+                allOf {
+                    expression { return env.CHANGE_ID != null } // Confirms it's a PR
+                    expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                }
+            }
             steps {
                 script {
                     sh '''
@@ -73,6 +75,12 @@ pipeline {
     
 
             stage('Archive Results') {
+                when {
+                allOf {
+                    expression { return env.CHANGE_ID != null } // Confirms it's a PR
+                    expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                }
+            }
                 steps {
                      script {
                         if (fileExists('code-analyzer-results.csv')) {
