@@ -44,8 +44,6 @@ pipeline {
                         git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
 
                         git checkout $SOURCE_BRANCH
-
-                        git branch
                         
                         git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH -- ./force-app  > delta-files.txt
                         
@@ -66,7 +64,7 @@ pipeline {
                     sh '''
                         if [ -s delta-files.txt ]; then
                             echo "Running SF Code Analyzer  on delta files..."
-                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "code-analyzer-results.csv" --config-file "code-analyzer.yml"
+                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "code-analyzer-results.html" --config-file "code-analyzer.yml"
                         else
                             echo "No delta files to scan."
                         fi
@@ -85,9 +83,9 @@ pipeline {
             }
                 steps {
                      script {
-                        if (fileExists('code-analyzer-results.csv')) {
+                        if (fileExists('code-analyzer-results.html')) {
                              // Archive the analysis results
-                            archiveArtifacts artifacts: 'code-analyzer-results.csv', fingerprint: true
+                            archiveArtifacts artifacts: 'code-analyzer-results.html', fingerprint: true
                             } else {
                                 echo "No analyzer-results.csv file found, skipping archive."
                             }
