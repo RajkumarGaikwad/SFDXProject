@@ -90,7 +90,7 @@ pipeline {
                             publishHTML (target : [allowMissing: false,
                                                      alwaysLinkToLastBuild: true,
                                                      keepAll: true,
-                                                     reportDir: 'reports',
+                                                     reportDir: '',
                                                      reportFiles: 'code-analyzer-results.html',
                                                      reportName: 'Code Analyzer Report',
                                                      reportTitles: 'The Report'])
