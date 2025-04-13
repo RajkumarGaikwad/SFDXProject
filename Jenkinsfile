@@ -41,10 +41,20 @@ pipeline {
 
                         git checkout ${sourceBranch}
                         
-                        git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH -- ./force-app  > delta-files.txt
 
-                        echo "Changed Files:"
-                        cat delta-files.txt || echo "No files found."
+                        // Read and process changed files
+                        def classFiles = readFile('delta-files.txt').trim()
+                        
+                        if (classFiles) {
+                            env.CHANGED_CLASS_FILES = classFiles.replace('\n', ',')
+                            env.HAS_CHANGES = true
+                            echo "Changed files:\n${classFiles}"
+                        } else {
+                            env.HAS_CHANGES = false
+                            echo "No files changed"
+                        }
+                        
                     '''
                 }
             }
@@ -55,6 +65,7 @@ pipeline {
                 allOf {
                     expression { return env.CHANGE_ID != null } // Confirms it's a PR
                     expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                    expression { env.HAS_CHANGES == true }
                 }
             }
             steps {
@@ -77,6 +88,7 @@ pipeline {
                 allOf {
                     expression { return env.CHANGE_ID != null } // Confirms it's a PR
                     expression { return env.CHANGE_TARGET == 'master' } // PR target is master
+                    expression { env.HAS_CHANGES == true }
                 }
             }
                 steps {
