@@ -35,8 +35,6 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "Using target: $TARGET_BRANCH"
-                    git fetch origin $TARGET_BRANCH
                         echo "Generating delta between commits..."
                         git fetch origin $TARGET_BRANCH
                         git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
