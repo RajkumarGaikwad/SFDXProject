@@ -39,7 +39,7 @@ pipeline {
                         
                         git fetch origin $TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH 
 
-                        git checkout $TARGET_BRANCH
+                        git checkout origin/$TARGET_BRANCH
                         
                         git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
 
