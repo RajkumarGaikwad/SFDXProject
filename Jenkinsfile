@@ -7,13 +7,6 @@ pipeline {
     }
     
     stages {
-
-            stage('Checkout Code') {
-                steps {
-                    // Checkout the code from the repository
-                    checkout scm
-                }
-            }
     
             stage('Authenticate Salesforce Org') {
                 steps {
