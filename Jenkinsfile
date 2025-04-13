@@ -5,8 +5,8 @@ pipeline {
     
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
-        TARGET_BRANCH = ${env.CHANGE_TARGET}
-        SOURCE_BRANCH=${env.CHANGE_BRANCH}
+        TARGET_BRANCH = "${env.CHANGE_TARGET}"
+        SOURCE_BRANCH= "${env.CHANGE_BRANCH}"
     }
     
     stages {
