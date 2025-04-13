@@ -42,6 +42,8 @@ pipeline {
                         git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
 
                         git checkout $SOURCE_BRANCH
+
+                        git branch
                         
                         git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH -- ./force-app  > delta-files.txt
 
