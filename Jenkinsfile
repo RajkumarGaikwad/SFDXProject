@@ -38,6 +38,8 @@ pipeline {
                         echo "Generating delta between commits..."
                         
                         git fetch origin $TARGET_BRANCH
+
+                        git checkout $TARGET_BRANCH
                         
                         git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
 
