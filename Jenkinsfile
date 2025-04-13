@@ -33,17 +33,17 @@ pipeline {
             steps {
                 script {
                     
-                    def targetBranch = 'master'
-                    def sourceBranch = 'RajkumarGaikwad-patch-2'
+                    def targetBranch = env.CHANGE_TARGET
+                    def sourceBranch = env.CHANGE_BRANCH
                     
                     sh '''
                         echo "Generating delta between commits..."
-                        git fetch origin master
-                        git fetch origin RajkumarGaikwad-patch-2:RajkumarGaikwad-patch-2
+                        git fetch origin ${targetBranch}
+                        git fetch origin ${sourceBranch}:${sourceBranch}
 
-                        git checkout RajkumarGaikwad-patch-2
+                        git checkout ${sourceBranch}
                         
-                        git diff --name-only origin/master RajkumarGaikwad-patch-2 | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git diff --name-only origin/${targetBranch} ${sourceBranch} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
                         echo "Changed Files:"
                         cat delta-files.txt || echo "No files found."
