@@ -86,6 +86,14 @@ pipeline {
                         if (fileExists('code-analyzer-results.html')) {
                              // Archive the analysis results
                             archiveArtifacts artifacts: 'code-analyzer-results.html', fingerprint: true
+                            
+                            publishHTML (target : [allowMissing: false,
+                                                     alwaysLinkToLastBuild: true,
+                                                     keepAll: true,
+                                                     reportDir: 'reports',
+                                                     reportFiles: 'code-analyzer-results.html',
+                                                     reportName: 'Code Analyzer Report',
+                                                     reportTitles: 'The Report'])
                             } else {
                                 echo "No analyzer-results.csv file found, skipping archive."
                             }
