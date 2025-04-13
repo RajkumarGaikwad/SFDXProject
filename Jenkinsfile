@@ -5,6 +5,8 @@ pipeline {
     
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+        TARGET_BRANCH = ${env.CHANGE_TARGET}
+        SOURCE_BRANCH=${env.CHANGE_BRANCH}
     }
     
     stages {
@@ -33,17 +35,15 @@ pipeline {
             steps {
                 script {
                     sh '''
-                     TARGET_BRANCH=${env.CHANGE_TARGET}
-                     SOURCE_BRANCH=${env.CHANGE_BRANCH}
-                    echo "Using target: \$TARGET_BRANCH"
-                    git fetch origin \$TARGET_BRANCH
+                    echo "Using target: $TARGET_BRANCH"
+                    git fetch origin $TARGET_BRANCH
                         echo "Generating delta between commits..."
-                        git fetch origin \$TARGET_BRANCH
-                        git fetch origin \$SOURCE_BRANCH:\$SOURCE_BRANCH
+                        git fetch origin $TARGET_BRANCH
+                        git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
 
                         git checkout ${sourceBranch}
                         
-                        git diff --name-only origin/\$TARGET_BRANCH \$SOURCE_BRANCH | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
 
                         echo "Changed Files:"
                         cat delta-files.txt || echo "No files found."
