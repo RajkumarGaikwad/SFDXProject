@@ -5,6 +5,8 @@ pipeline {
     
     environment {
         PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+        TARGET_BRANCH = "${env.CHANGE_TARGET}"
+        SOURCE_BRANCH= "${env.CHANGE_BRANCH}"
     }
     
     stages {
@@ -32,27 +34,25 @@ pipeline {
             }
             steps {
                 script {
-                    
-                    def targetBranch = env.CHANGE_TARGET
-                    def sourceBranch = env.CHANGE_BRANCH
-                    
                     sh '''
                         echo "Generating delta between commits..."
-                        git fetch origin ${targetBranch}
-                        git fetch origin ${sourceBranch}:${sourceBranch}
-
-                        git checkout ${sourceBranch}
                         
-                        git diff --name-only origin/${targetBranch} ${sourceBranch} | grep -E '\\.cls$|\\.trigger$|\\.apex$|\\.js$|\\.cmp$|\\.xml$|\\.html$' > delta-files.txt || true
+                        git fetch origin $TARGET_BRANCH:refs/remotes/origin/$TARGET_BRANCH 
 
-                        echo "Changed Files:"
-                        cat delta-files.txt || echo "No files found."
+                        git checkout origin/$TARGET_BRANCH
+                        
+                        git fetch origin $SOURCE_BRANCH:$SOURCE_BRANCH
+
+                        git checkout $SOURCE_BRANCH
+                        
+                        git diff --name-only origin/$TARGET_BRANCH $SOURCE_BRANCH -- ./force-app  > delta-files.txt
+                        
                     '''
                 }
             }
         }
 
-        stage('Run Salesforce Code Analyzer - Delta Files Only') {
+        stage('Run Salesforce Code Analyzer') {
             when {
                 allOf {
                     expression { return env.CHANGE_ID != null } // Confirms it's a PR
@@ -64,7 +64,7 @@ pipeline {
                     sh '''
                         if [ -s delta-files.txt ]; then
                             echo "Running SF Code Analyzer  on delta files..."
-                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "code-analyzer-results.csv" --config-file "code-analyzer.yml"
+                            sf code-analyzer run --workspace $(cat delta-files.txt | tr '\\n' ',' | sed 's/,$//') --rule-selector all --view detail --output-file "code-analyzer-results.html" --config-file "code-analyzer.yml"
                         else
                             echo "No delta files to scan."
                         fi
@@ -83,9 +83,17 @@ pipeline {
             }
                 steps {
                      script {
-                        if (fileExists('code-analyzer-results.csv')) {
+                        if (fileExists('code-analyzer-results.html')) {
                              // Archive the analysis results
-                            archiveArtifacts artifacts: 'code-analyzer-results.csv', fingerprint: true
+                            archiveArtifacts artifacts: 'code-analyzer-results.html', fingerprint: true
+                            
+                            publishHTML (target : [allowMissing: false,
+                                                     alwaysLinkToLastBuild: true,
+                                                     keepAll: true,
+                                                     reportDir: '',
+                                                     reportFiles: 'code-analyzer-results.html',
+                                                     reportName: 'Code Analyzer Report',
+                                                     reportTitles: 'The Report'])
                             } else {
                                 echo "No analyzer-results.csv file found, skipping archive."
                             }
