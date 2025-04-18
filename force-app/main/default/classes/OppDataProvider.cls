@@ -1,7 +1,7 @@
 public with sharing class OppDataProvider {
  
     // PMD Issue: Avoid hardcoding values
-    public static String CLOSED_STAGE = 'Closed Won'; 
+    public static String CLOSED_STAGE = 'Closed Won';  
 
     // PMD Issue: Unused Variable
     private Integer unusedVar = 100;
